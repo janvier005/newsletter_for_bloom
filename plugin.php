@@ -28,11 +28,15 @@
 
 */
 
- nlplugin_activate();
+if( !function_exists('get_plugin_data') ){
+  require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+}
 
- if ( !defined( 'ABSPATH' ) ) {
- 	die();
- }
+nlplugin_activate();
+
+if ( !defined( 'ABSPATH' ) ) {
+	die();
+}
 
  require_once( 'newsletter_for_bloom-plugin.class.php' );
  require_once( 'newsletter_for_bloom-email-provider-loader.class.php' );
@@ -133,14 +137,14 @@
 
  }
 
- function nlplugin_activation_checker($plugin_path,$last = false){
-   $status = is_plugin_active($plugin_path);
-   $plugin = get_plugin_data(WP_PLUGIN_DIR.'/'.$plugin_path);
-   if($status === false){
-     return error_return('The plugin '.$plugin['Name'].' is not activated, please activate it before activating Newsletter for Bloom plugin.',$last);
-   }
-   return true;
- }
+function nlplugin_activation_checker($plugin_path,$last = false){
+  $status = is_plugin_active($plugin_path);
+  $plugin = get_plugin_data(WP_PLUGIN_DIR.'/'.$plugin_path);
+  if($status === false){
+   return error_return('The plugin '.$plugin['Name'].' is not activated, please activate it before activating Newsletter for Bloom plugin.',$last);
+  }
+  return true;
+}
 
 function error_return($message,$last = false){
   if (strpos(get_transient( 'nlplugin-notice-panel' ), $message) === false) {
@@ -162,3 +166,4 @@ function nlplugin_check_activation_notice(){
 function deactivate_plugin_now(){
   deactivate_plugins( plugin_basename( __FILE__ ) );
 }
+
